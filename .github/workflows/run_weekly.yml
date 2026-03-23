@@ -16,4 +16,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run backend script
-        run: python backend.py
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY}}
+          PROJECT_URL: ${{ secrets.PROJECT_URL}}
+        run: python backend.py   
