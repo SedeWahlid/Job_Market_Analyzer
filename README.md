@@ -13,33 +13,36 @@ The Job Market Analyzer is an automated tool designed to scrape job listings fro
 
 ## Components
 
-### extractor.py
+### backend.py
 This Python script performs the core functionality:
 
 1. **Data Scraping**: Collects job listings from LinkedIn and Indeed.
 2. **Tech Stack Extraction**: Analyzes job descriptions to identify relevant technical stacks using predefined keywords.
 3. **Database Insertion**: Inserts job data and tech stack information into a Supabase database.
-4. **Streamlit Visualization**: Retrieves data from the database and displays it using Streamlit charts.
+
+### frontend.py
+1. **Streamlit Visualization**: Retrieves data from the database and displays it using Streamlit charts.
 
 ### run_weekly.yml
-This GitHub Actions workflow file schedules the `extractor.py` script to run weekly:
+This GitHub Actions workflow file schedules the `backend.py` script to run weekly:
 
-- **Schedule**: Runs at 6:00 AM UTC every Monday.
+- **Schedule**: Runs at 0:00 AM UTC every Sunday.
 - **Steps**:
   - Checks out the code repository.
   - Sets up Python and installs dependencies.
-  - Executes the `extractor.py` script.
+  - Checks out the if Secrets exist
+  - Executes the `backend.py` script.
 
 ### requirements.txt
 This file lists all the Python packages required for running the project:
 
-- dotenv: For managing environment variables.
 - supabase: For connecting to Supabase database.
 - pandas: For data manipulation and analysis.
 - python-jobspy: For scraping job listings from LinkedIn and Indeed.
 - streamlit: For building interactive web applications.
+- numpy: For handling nan values
 
-## Setup
+## Local Setup
 
 1. **Clone the Repository**:
    ```bash
@@ -54,15 +57,16 @@ This file lists all the Python packages required for running the project:
    ```
 
 3. **Environment Variables**:
-   Create a `.env` file in the root directory and add your Supabase API key and URL:
-   ```
-   SUPABASE_KEY=your-supabase-key
-   PROJECT_URL=your-supabase-url
-   ```
+ You can set the environment variables in your terminal session:
+
+  ```bash
+  export SUPABASE_KEY=your-supabase-key
+  export PROJECT_URL=your-project-url
+  ```
 
 4. **Run the Script Manually with no Visuals**:
    ```bash
-   python extractor.py
+   python backend.py
    ```
 
 5. **Deploy Streamlit App** (Optional):
@@ -73,11 +77,8 @@ This file lists all the Python packages required for running the project:
 1. **Viewing Data**:
    You could also use the streamlit interface which is limited to just visualizing the data:
    ```bash
-   streamlit run extractor.py
+   streamlit run frontend.py
    ```
-
-2. **Scheduling Runs**:
-   The GitHub Actions workflow (`run_weekly.yml`) ensures that the script runs automatically every Monday at 6:00 AM UTC.
 
 ## Contributing
 
