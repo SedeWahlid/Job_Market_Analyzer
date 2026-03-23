@@ -25,7 +25,7 @@ def extract_tech_stack(description, tech_keywords):
     return tech_stack
 
 def insert_data_to_supabase(cleaned_jobs):
-    load_dotenv()
+
     supabase_key = getenv("SUPABASE_KEY")
     supabase_url = getenv("PROJECT_URL")
     supabase = create_client(supabase_url, supabase_key)
