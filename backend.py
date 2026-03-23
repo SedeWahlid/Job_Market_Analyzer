@@ -2,7 +2,6 @@ from jobspy import scrape_jobs
 import pandas as pd
 from supabase import create_client
 from os import getenv
-from dotenv import load_dotenv
 from numpy import nan
 
  
