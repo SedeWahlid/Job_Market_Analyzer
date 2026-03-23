@@ -83,7 +83,7 @@ jobs = scrape_jobs(
     location="Germany",
     hours_old=720,  # Data not older than 30 days (720 hours)
     country_indeed='Germany',
-    results_wanted=40,
+    results_wanted=1000,
     linkedin_fetch_description=True,
     proxies=None # I do not have any :)
 )
