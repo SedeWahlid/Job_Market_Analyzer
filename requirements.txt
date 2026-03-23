@@ -1,4 +1,3 @@
-dotenv
 supabase
 pandas
 python-jobspy
