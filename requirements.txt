@@ -2,3 +2,4 @@ dotenv
 supabase
 pandas
 python-jobspy
+streamlit

@@ -3,6 +3,7 @@ import pandas as pd
 from supabase import create_client
 from os import getenv
 from dotenv import load_dotenv
+import streamlit as st
 
  
 #################################################
@@ -95,3 +96,42 @@ cleaned_jobs = clean_job_data(jobs)
 
 # Insert cleaned data into Supabase
 insert_data_to_supabase(cleaned_jobs)
+
+#################################################
+# STREAMLIT VISUALIZATION + DATA ANALYSIS
+#################################################
+
+def get_tech_stack_percentages_from_db():
+    load_dotenv()
+    supabase_key = getenv("SUPABASE_KEY")
+    supabase_url = getenv("PROJECT_URL")
+    supabase = create_client(supabase_url, supabase_key)
+
+    # Query the tech stack data from the database
+    response = supabase.from_("tech_stack").select("job_id", "technology").execute()
+    tech_data = response.data
+
+    # Create a DataFrame from the fetched data
+    tech_df = pd.DataFrame(tech_data)
+    
+    # Count occurrences of each technology
+    tech_counts = tech_df['technology'].value_counts()
+
+    # Calculate unique job counts
+    total_unique_jobs = len(tech_df['job_id'].unique())
+
+    # Calculate percentages
+    tech_percentages = (tech_counts / total_unique_jobs) * 100
+
+    return tech_percentages
+
+def display_tech_stack(tech_percentages):
+    st.subheader('Tech Stack Distribution')
+    tech_df = pd.DataFrame(list(tech_percentages.items()), columns=['Tech Stack', 'Percentage'])
+    st.bar_chart(tech_df.set_index('Tech Stack'))
+
+# Retrieve tech stack percentages from the database
+tech_percentages = get_tech_stack_percentages_from_db()
+
+# Display tech stacks in one chart
+display_tech_stack(tech_percentages)
