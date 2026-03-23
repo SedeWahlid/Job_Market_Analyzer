@@ -7,7 +7,6 @@ import pandas as pd
 #################################################
 
 def get_tech_stack_percentages_from_db():
-    st.secrets()
     supabase_key = st.secrets["SUPABASE_KEY"]
     supabase_url = st.secrets["PROJECT_URL"]
     supabase = create_client(supabase_url, supabase_key)
