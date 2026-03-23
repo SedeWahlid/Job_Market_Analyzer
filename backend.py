@@ -3,6 +3,7 @@ import pandas as pd
 from supabase import create_client
 from os import getenv
 from dotenv import load_dotenv
+from numpy import nan
 
  
 #################################################
@@ -11,7 +12,7 @@ from dotenv import load_dotenv
 
 def clean_job_data(jobs):
     # Select only the necessary rows and columns 
-    cleaned_jobs = pd.DataFrame(jobs[['id', 'title', 'company', 'job_type', 'job_level', 'tech_stack']]).drop_duplicates(subset=['title', 'company', 'job_type'], keep='first')
+    cleaned_jobs = pd.DataFrame(jobs[['id', 'title', 'company', 'job_type', 'job_level', 'tech_stack']]).drop_duplicates(subset=['title', 'company', 'job_type'], keep='first').replace(nan,None)
     return cleaned_jobs
 
 def extract_tech_stack(description, tech_keywords):
