@@ -4,6 +4,8 @@
 
 The Job Market Analyzer is an automated tool designed to scrape job listings from LinkedIn and Indeed, extract relevant technical stacks, and store the data in a Supabase database. It also provides a Streamlit-based visualization dashboard to display the distribution of different technologies used in job descriptions. Note: The location is striclty set to Germany !
 
+Data results for "what are the most asked Tech stacks in the German IT Market ?" : https://jobmarketanalyzer-3wktesmwcdorxuedzm75em.streamlit.app/ 
+
 ## Features
 
 - **Data Scraping**: Utilizes `jobspy` to gather job postings based on specified search terms and locations.
