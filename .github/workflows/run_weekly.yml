@@ -1,0 +1,19 @@
+# .github/workflows/weekly-backend.yml
+name: Weekly Backend Run
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at 00:00 UTC
+  workflow_dispatch:     # Allows manual triggering
+jobs:
+  run-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run backend script
+        run: python backend.py
