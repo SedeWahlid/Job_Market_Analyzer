@@ -134,4 +134,6 @@ def display_tech_stack(tech_percentages):
 tech_percentages = get_tech_stack_percentages_from_db()
 
 # Display tech stacks in one chart
+st.title("Job market Analyzer")
+st.set_page_config(layout="wide")
 display_tech_stack(tech_percentages)
