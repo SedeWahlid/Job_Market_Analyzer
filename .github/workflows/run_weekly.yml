@@ -15,8 +15,25 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Debug - Check Secrets Presence
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          PROJECT_URL: ${{ secrets.PROJECT_URL }}
+        run: |
+          if [ -z "$SUPABASE_KEY" ]; then
+            echo "❌ SUPABASE_KEY is missing"
+            exit 1
+          else
+            echo "✅ SUPABASE_KEY is set (length: ${#SUPABASE_KEY})"
+          fi
+          if [ -z "$PROJECT_URL" ]; then
+            echo "❌ PROJECT_URL is missing"
+            exit 1
+          else
+            echo "✅ PROJECT_URL is set (length: ${#PROJECT_URL})"
+          fi
       - name: Run backend script
         env:
-          SUPABASE_KEY: '${{ secrets.SUPABASE_KEY}}'
-          PROJECT_URL: '${{ secrets.PROJECT_URL}}'
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          PROJECT_URL: ${{ secrets.PROJECT_URL }}
         run: python backend.py   
