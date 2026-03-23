@@ -31,7 +31,7 @@ def get_tech_stack_percentages_from_db():
 
 def display_tech_stack(tech_percentages):
     st.subheader('Tech Stack Distribution')
-    tech_df = pd.DataFrame(list(tech_percentages.items()), columns=['Tech Stack', 'Percentage'])
+    tech_df = pd.DataFrame(list(tech_percentages.items()), columns=['Tech Stack', 'Total Count'])
     st.bar_chart(tech_df.set_index('Tech Stack'))
 
 # Retrieve tech stack percentages from the database
