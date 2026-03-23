@@ -17,6 +17,6 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run backend script
         env:
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY}}
-          PROJECT_URL: ${{ secrets.PROJECT_URL}}
+          SUPABASE_KEY: '${{ secrets.SUPABASE_KEY}}'
+          PROJECT_URL: '${{ secrets.PROJECT_URL}}'
         run: python backend.py   
