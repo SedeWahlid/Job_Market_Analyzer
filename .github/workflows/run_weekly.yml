@@ -1,8 +1,6 @@
 # .github/workflows/weekly-backend.yml
 name: Weekly Backend Run
 on:
-  schedule:
-    - cron: '0 18 * * *'  # Runs at 6:00 PM UTC → 8:00 PM CEST (summer)
   workflow_dispatch:     # Allows manual triggering
 jobs:
   run-backend:
