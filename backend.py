@@ -162,7 +162,7 @@ try:
         location="Germany",
         hours_old=720,  # Data not older than 30 days (720 hours)
         country_indeed='Germany',
-        results_wanted=1000,
+        results_wanted=20000,
         linkedin_fetch_description=True,
         proxies=None # I do not have any :)
     )
