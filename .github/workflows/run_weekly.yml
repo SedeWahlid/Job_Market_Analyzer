@@ -2,7 +2,7 @@
 name: Weekly Backend Run
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Runs every Sunday at 00:00 UTC
+    - cron: '0 18 * * *'  # Runs at 6:00 PM UTC → 8:00 PM CEST (summer)
   workflow_dispatch:     # Allows manual triggering
 jobs:
   run-backend:
