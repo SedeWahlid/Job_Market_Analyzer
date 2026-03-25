@@ -160,7 +160,7 @@ try:
         site_name=["linkedin","indeed"],
         search_term="Software engineer",
         location="Germany",
-        hours_old=24,  # Data not older than 30 days (720 hours)
+        hours_old=24,  # Data not older than 24 hours
         country_indeed='Germany',
         results_wanted=100,
         linkedin_fetch_description=True,
