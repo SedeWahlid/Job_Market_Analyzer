@@ -81,6 +81,7 @@ This file lists all the Python packages required for running the project:
    ```bash
    streamlit run frontend.py
    ```
+   Note: You need to create .streamlit/secrets.toml and paste the secrets in the secrets.toml when running this locally.
 
 ## Contributing
 

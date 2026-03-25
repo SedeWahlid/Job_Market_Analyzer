@@ -11,43 +11,52 @@ from numpy import nan
 
 def clean_job_data(jobs):
     # Select only the necessary rows and columns 
-    cleaned_jobs = pd.DataFrame(jobs[['id', 'title', 'company', 'job_type', 'job_level', 'tech_stack']]).drop_duplicates(subset=['title', 'company', 'job_type'], keep='first').replace(nan,None)
+    try:
+        cleaned_jobs = pd.DataFrame(jobs[['id', 'title', 'company', 'job_type', 'job_level', 'tech_stack']]).drop_duplicates(subset=['title', 'company', 'job_type'], keep='first').replace(nan,None)
+    except Exception as e:
+        print(f"Cleaning data failed with error: {e}\n")
+        return None,pd.DataFrame([])
     return cleaned_jobs
 
 def extract_tech_stack(description, tech_keywords):
     # Convert description to lowercase for case-insensitive matching
-    description_lower = description.lower()
-    
-    # Find all tech stack items present in the description
-    tech_stack = [keyword for keyword in tech_keywords if keyword.lower() in description_lower]
-    
+    try:
+        description_lower = description.lower()
+        
+        # Find all tech stack items present in the description
+        tech_stack = [keyword for keyword in tech_keywords if keyword.lower() in description_lower]
+    except Exception as e:
+        print(f"Error occured while extracting Tech stacks from Descriptions with error: {e}\n")
+        return None,[]
     return tech_stack
 
 def insert_data_to_supabase(cleaned_jobs):
+    try:
+        supabase_key = getenv("SUPABASE_KEY")
+        supabase_url = getenv("PROJECT_URL")
+        supabase = create_client(supabase_url, supabase_key)
 
-    supabase_key = getenv("SUPABASE_KEY")
-    supabase_url = getenv("PROJECT_URL")
-    supabase = create_client(supabase_url, supabase_key)
-
-    # Insert jobs into the 'jobs' table
-    for _, job in cleaned_jobs.iterrows():
-        job_data = {
-            "id": job["id"],
-            "title": job["title"],
-            "company": job["company"],
-            "job_type": job["job_type"],
-            "job_level": job["job_level"]
-        }
-        response = supabase.from_("jobs").upsert([job_data]).execute()
-
-    # Insert tech stack into the 'tech_stack' table
-    for _, job in cleaned_jobs.iterrows():
-        for tech in job["tech_stack"]:
-            tech_stack_data = {
-                "job_id": job["id"],
-                "technology": tech
+        # Insert jobs into the 'jobs' table
+        for _, job in cleaned_jobs.iterrows():
+            job_data = {
+                "id": job["id"],
+                "title": job["title"],
+                "company": job["company"],
+                "job_type": job["job_type"],
+                "job_level": job["job_level"]
             }
-            response = supabase.from_("tech_stack").upsert([tech_stack_data]).execute()
+            response = supabase.from_("jobs").upsert([job_data]).execute()
+
+        # Insert tech stack into the 'tech_stack' table
+        for _, job in cleaned_jobs.iterrows():
+            for tech in job["tech_stack"]:
+                tech_stack_data = {
+                    "job_id": job["id"],
+                    "technology": tech
+                }
+                response = supabase.from_("tech_stack").upsert([tech_stack_data]).execute()
+    except Exception as e:
+        print(f"Error occured when inserting data into database with error : {e}\n")
 
 # list of technology keywords to look for in job descriptions
 tech_keywords = [
@@ -76,22 +85,24 @@ tech_keywords = [
     'google-cloud-vpc', 'aws-eks', 'azure-aks', 'google-cloud-gke', 'aws-lambda', 
     'azure-functions', 'google-cloud-functions'
 ]
+try:
+    jobs = scrape_jobs(
+        site_name=["linkedin","indeed"],
+        search_term="Software engineer",
+        location="Germany",
+        hours_old=720,  # Data not older than 30 days (720 hours)
+        country_indeed='Germany',
+        results_wanted=1000,
+        linkedin_fetch_description=True,
+        proxies=None # I do not have any :)
+    )
+    
+        # Add a new column for tech stack
+    jobs['tech_stack'] = jobs['description'].apply(lambda desc: extract_tech_stack(desc, tech_keywords))
 
-jobs = scrape_jobs(
-    site_name=["linkedin","indeed"],
-    search_term="Software engineer",
-    location="Germany",
-    hours_old=720,  # Data not older than 30 days (720 hours)
-    country_indeed='Germany',
-    results_wanted=1000,
-    linkedin_fetch_description=True,
-    proxies=None # I do not have any :)
-)
+    cleaned_jobs = clean_job_data(jobs)
 
-# Add a new column for tech stack
-jobs['tech_stack'] = jobs['description'].apply(lambda desc: extract_tech_stack(desc, tech_keywords))
-
-cleaned_jobs = clean_job_data(jobs)
-
-# Insert cleaned data into Supabase
-insert_data_to_supabase(cleaned_jobs)
+    # Insert cleaned data into Supabase
+    insert_data_to_supabase(cleaned_jobs)
+except Exception as e:
+    print(f"Could not scrape Jobs, failed with error: {e}\n")
