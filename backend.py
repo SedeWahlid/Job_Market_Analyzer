@@ -4,6 +4,7 @@ from supabase import create_client
 from os import getenv
 from numpy import nan
 import re
+import time
 
  
 #################################################
@@ -156,16 +157,22 @@ tech_keywords = [
     'unix', 'windows', 'macos', 'ubuntu', 'centos', 'debian', 'redhat', 'alpine'
 ]
 try:
-    jobs = scrape_jobs(
-        site_name=["linkedin","indeed"],
-        search_term="Software engineer",
-        location="Germany",
-        hours_old=24,  # Data not older than 30 days (720 hours)
-        country_indeed='Germany',
-        results_wanted=100,
-        linkedin_fetch_description=True,
-        proxies=None # I do not have any :)
-    )
+    j = 0
+    jobs = pd.DataFrame()
+    for i in range(12):
+        new_data = scrape_jobs(
+            site_name=["linkedin","indeed"],
+            search_term="Software engineer",
+            location="Germany",
+            country_indeed='Germany',
+            results_wanted=1000,
+            linkedin_fetch_description=True,
+            proxies=None, # I do not have any :)
+            offset=j
+        )
+        jobs = pd.concat([jobs, new_data], ignore_index=True)
+        j+= 1000
+        time.sleep(i)
     
         # Add a new column for tech stack
     jobs['tech_stack'] = jobs['description'].apply(lambda desc: extract_tech_stack(desc, tech_keywords))
